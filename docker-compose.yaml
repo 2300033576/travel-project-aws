@@ -5,30 +5,22 @@ services:
     build: ./travel_booking_frontend-master
     container_name: frontend_app
     ports:
-      - "3000:80"  # React build served on nginx port 80 mapped to 3000
+      - "3000:80"
     depends_on:
       - backend
-    deploy:
-      resources:
-        limits:
-          memory: 256M
 
   backend:
     build: ./travel_booking_backend-master
     container_name: backend_app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/travel?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/travel?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
     ports:
-      - "8989:8080"  # Make sure backend container uses 8080 inside Docker
+      - "8989:8989"
     depends_on:
       db:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 512M
 
   db:
     image: mysql:8.0
@@ -46,10 +38,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 512M
 
 volumes:
   db_data:
